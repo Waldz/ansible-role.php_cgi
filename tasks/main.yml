@@ -1,0 +1,24 @@
+---
+- name: Install PHP-CGI packages
+  sudo: true
+  apt: pkg={{ item }} state=installed force=yes
+  with_items: phpcgi_apt_packages
+  tags: [php, apache, packages]
+
+
+- name: Enable Apache modules
+  command: >
+    a2enmod {{ item }}
+  with_items: phpcgi_apache_modules
+  register: command_result
+  changed_when: >
+    "To activate the new configuration, you need to run:" in command_result.stdout
+  notify: reload apache
+
+
+- name: Check syntax of PHP-CGI php.ini configuration
+  shell: >
+    php-cgi -e --version --php-ini '{{ phpcgi_path }}/php.ini'
+  register: result
+  failed_when: result.rc != 0 or result.stderr != ''
+  changed_when: result.rc != 0 or result.stderr != ''

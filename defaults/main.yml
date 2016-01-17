@@ -1,0 +1,15 @@
+---
+phpcgi_path: /etc/php5/cgi
+
+phpcgi_apt_packages:
+  - php5-cgi
+  - libapache2-mod-fcgid
+  - apache2-suexec
+
+phpcgi_apache_modules:
+  - fcgid
+  - mime
+  - actions
+  - suexec
+  #- rewrite
+  #- include
